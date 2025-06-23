@@ -1,0 +1,330 @@
+.radar-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #000;
+  overflow: hidden;
+}
+
+.topographic-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(0deg, transparent 24%, rgba(0, 204, 0, 0.05) 25%, rgba(0, 204, 0, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 204, 0, 0.05) 75%, rgba(0, 204, 0, 0.05) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, rgba(0, 204, 0, 0.05) 25%, rgba(0, 204, 0, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 204, 0, 0.05) 75%, rgba(0, 204, 0, 0.05) 76%, transparent 77%, transparent);
+  background-size: 50px 50px;
+  background-position: 
+    calc(var(--mouse-x, 50%) * 0.1) calc(var(--mouse-y, 50%) * 0.1),
+    calc(var(--mouse-x, 50%) * 0.1) calc(var(--mouse-y, 50%) * 0.1);
+  animation: grid-drift 20s linear infinite;
+  z-index: 1;
+}
+
+@keyframes grid-drift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-50px, -50px); }
+}
+
+.radar-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #00ff00;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: radar-dot-fade 2s ease-out forwards;
+  z-index: 10;
+  box-shadow: 0 0 10px #00ff00;
+}
+
+@keyframes radar-dot-fade {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+.radar-canvas {
+  border: 2px solid #00cc00;
+  border-radius: 50%;
+  background: rgba(0, 20, 0, 0.6);
+}
+
+.radar-overlay {
+  position: absolute;
+  text-align: center;
+  color: #00cc00;
+  font-family: 'Courier New', monospace;
+  pointer-events: none;
+}
+
+.radar-overlay h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 8px #00cc00;
+}
+
+.radar-overlay p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.ellipses {
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+}
+
+.hud-display {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #00cc00;
+}
+
+.hud-text {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 12px;
+  border: 1px solid #00cc00;
+  border-radius: 3px;
+}
+
+.top-left { top: 20px; left: 20px; }
+.top-right { top: 20px; right: 20px; }
+.bottom-left { bottom: 20px; left: 20px; }
+.bottom-right { bottom: 20px; right: 20px; }
+.mid-left { top: 50%; left: 20px; transform: translateY(-50%); }
+.mid-right { top: 50%; right: 20px; transform: translateY(-50%); }
+
+.cursor {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.reticle {
+  position: fixed;
+  width: 180px;
+  height: 180px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: all 0.5s ease;
+  z-index: 1000;
+}
+
+.reticle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: #00cc00;
+  transform: translateY(-50%);
+}
+
+.reticle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: #00cc00;
+  transform: translateX(-50%);
+}
+
+.reticle-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  border: 2px solid #00cc00;
+  transform: translate(-50%, -50%);
+}
+
+.reticle-inner::before,
+.reticle-inner::after {
+  content: '';
+  position: absolute;
+  background: #00cc00;
+}
+
+.reticle-inner::before {
+  top: 50%;
+  left: -5px;
+  right: -5px;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.reticle-inner::after {
+  left: 50%;
+  top: -5px;
+  bottom: -5px;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.reticle .corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #00cc00;
+}
+
+.reticle .corner.tl {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.reticle .corner.tr {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+}
+
+.reticle .corner.bl {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+}
+
+.reticle .corner.br {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+.reticle.focusing {
+  animation: spiral-focus 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reticle.locked .reticle-inner {
+  border-color: #ff0000;
+}
+
+.reticle.locked .reticle-inner::before,
+.reticle.locked .reticle-inner::after {
+  background: #ff0000;
+}
+
+.locked-text {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff0000;
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: bold;
+  animation: flash 0.5s infinite;
+  white-space: nowrap;
+}
+
+@keyframes flash {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes spiral-focus {
+  0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  25% { transform: translate(-50%, -50%) scale(0.4) rotate(180deg); }
+  75% { transform: translate(-50%, -50%) scale(0.4) rotate(180deg); }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+}
+
+.crosshair-lines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.crosshair-h-left {
+  position: absolute;
+  left: 0;
+  height: 1px;
+  background: #00cc00;
+  opacity: 0.7;
+  transform: translateY(-50%);
+  transition: all 0.5s ease;
+}
+
+.crosshair-h-right {
+  position: absolute;
+  right: 0;
+  height: 1px;
+  background: #00cc00;
+  opacity: 0.7;
+  transform: translateY(-50%);
+  transition: all 0.5s ease;
+}
+
+.crosshair-v-top {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  background: #00cc00;
+  opacity: 0.7;
+  transform: translateX(-50%);
+  transition: all 0.5s ease;
+}
+
+.crosshair-v-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  background: #00cc00;
+  opacity: 0.7;
+  transform: translateX(-50%);
+  transition: all 0.5s ease;
+}
+.reticle-trail-line {
+  position: fixed;
+  height: 2px;
+  background: orange;
+  transform-origin: left center;
+  pointer-events: none;
+  z-index: 998;
+  animation: trail-fade 3.5s ease-out forwards;
+}
+
+@keyframes trail-fade {
+  0% { opacity: 1; }
+  57% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.range-line {
+  position: fixed;
+  height: 1px;
+  background: #00ff00;
+  transform-origin: left center;
+  pointer-events: none;
+  z-index: 997;
+  opacity: 0.6;
+  transition: all 0.5s ease;
+}
