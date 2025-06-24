@@ -304,8 +304,8 @@
 }
 .reticle-trail-line {
   position: fixed;
-  height: 2px;
-  background: orange;
+  height: 1px;
+  background: #ff07d6;
   transform-origin: left center;
   pointer-events: none;
   z-index: 998;
@@ -321,10 +321,10 @@
 .range-line {
   position: fixed;
   height: 1px;
-  background: #00ff00;
+  background: #ff07d6;
   transform-origin: left center;
   pointer-events: none;
   z-index: 997;
-  opacity: 0.6;
+  /* opacity: 0.6; */
   transition: all 0.5s ease;
 }
